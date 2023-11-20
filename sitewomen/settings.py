@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-4m4ann647exx)k0t82n3_)i84ex^)r-a#g^gsso-50phk=+s_z"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False  # todo:switch
+DEBUG = True  # todo:switch
 
 ALLOWED_HOSTS = ["127.0.0.1"]
 
@@ -55,7 +55,9 @@ ROOT_URLCONF = "sitewomen.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            BASE_DIR / "templates",
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -117,6 +119,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
