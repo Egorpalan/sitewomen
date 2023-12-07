@@ -3,8 +3,10 @@ from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.urls import reverse
 from django.template.loader import render_to_string
 from django.template.defaultfilters import slugify
+import uuid
 
-from women.models import Women, Category, TagPost
+from women.models import Women, Category, TagPost, UploadFiles
+from .forms import AddPostForm, UploadFileForm
 
 menu = [
     {"title": "О сайте", "url_name": "about"},
@@ -26,9 +28,17 @@ def index(request):
 
 
 def about(request):
+    if request.method == "POST":
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            fp = UploadFiles(file=form.cleaned_data["file"])
+            fp.save()
+    else:
+        form = UploadFileForm()
     data = {
         "title": "О сайте",
         "menu": menu,
+        "form": form,
     }
     return render(request, "women/about.html", context=data)
 
@@ -46,7 +56,26 @@ def show_post(request, post_slug):
 
 
 def addpage(request):
-    return HttpResponse(f"Добавление статьи")
+    if request.method == "POST":
+        form = AddPostForm(request.POST, request.FILES)
+        if form.is_valid():
+            # try:
+            #     Women.objects.create(**form.cleaned_data)
+            #     return redirect('home')
+            # except:
+            #     form.add_error(None, "Ошибка добавления поста")
+            form.save()
+            return redirect("home")
+    else:
+        form = AddPostForm()
+
+    form = AddPostForm()
+    data = {
+        "menu": menu,
+        "title": "Добавление статьи",
+        "form": form,
+    }
+    return render(request, "women/addpage.html", data)
 
 
 def contact(request):

@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from django.template.defaultfilters import slugify
+from django.core.validators import MinLengthValidator, MaxLengthValidator
 
 # Create your models here.
 
@@ -55,7 +56,22 @@ class Women(models.Model):
         PUBLISHED = 1, "Опубликовано"
 
     title = models.CharField(max_length=50, verbose_name="Заголовок")
-    slug = models.SlugField(max_length=255, unique=True, db_index=True)
+    slug = models.SlugField(
+        max_length=255,
+        unique=True,
+        db_index=True,
+        validators=[
+            MinLengthValidator(5, message="Минимум 5 символов"),
+            MaxLengthValidator(100, message="Максимум 5 символов"),
+        ],
+    )
+    photo = models.ImageField(
+        upload_to="photos/%Y/%m/%d/",
+        default=None,
+        blank=True,
+        null=True,
+        verbose_name="Фото",
+    )
     content = models.TextField(blank=True, verbose_name="Текст статьи")
     time_create = models.DateTimeField(auto_now_add=True, verbose_name="Время создания")
     time_update = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
@@ -135,3 +151,7 @@ class Husband(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class UploadFiles(models.Model):
+    file = models.FileField(upload_to="uploads_model")
