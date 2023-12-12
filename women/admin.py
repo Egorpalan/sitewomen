@@ -5,6 +5,7 @@ from django.utils.safestring import mark_safe
 from .models import Women, Category
 
 
+
 class MarriedFilter(admin.SimpleListFilter):
     title = "Статус женщины"
     parameter_name = "status"
