@@ -2,6 +2,7 @@ from django.db import models
 from django.urls import reverse
 from django.template.defaultfilters import slugify
 from django.core.validators import MinLengthValidator, MaxLengthValidator
+from django.contrib.auth import get_user_model
 
 # Create your models here.
 
@@ -96,6 +97,14 @@ class Women(models.Model):
         null=True,
         blank=True,
         verbose_name="Муж",
+    )
+
+    author = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.SET_NULL,
+        related_name="posts",
+        null=True,
+        default=None,
     )
 
     objects = models.Manager()

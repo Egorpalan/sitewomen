@@ -15,6 +15,9 @@ from django.views.generic import (
     DeleteView,
 )
 from .utils import DataMixin
+from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from women.models import Women, Category, TagPost, UploadFiles
 from .forms import AddPostForm, UploadFileForm
@@ -31,19 +34,16 @@ class WomenHome(DataMixin, ListView):
         return Women.published.all().select_related("cat")
 
 
+@login_required
 def about(request):
-    if request.method == "POST":
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            fp = UploadFiles(file=form.cleaned_data["file"])
-            fp.save()
-    else:
-        form = UploadFileForm()
-    data = {
-        "title": "О сайте",
-        "form": form,
-    }
-    return render(request, "women/about.html", context=data)
+    contact_list = Women.published.all()
+    paginator = Paginator(contact_list, 3)
+
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    return render(
+        request, "women/about.html", {"page_obj": page_obj, "title": "О сайте"}
+    )
 
 
 class ShowPost(DataMixin, DetailView):
@@ -60,11 +60,15 @@ class ShowPost(DataMixin, DetailView):
         return get_object_or_404(Women.published, slug=self.kwargs[self.slug_url_kwarg])
 
 
-class AddPage(DataMixin, FormView):
+class AddPage(LoginRequiredMixin, DataMixin, FormView):
     form_class = AddPostForm
     template_name = "women/addpage.html"
     title_page = "Добавление статьи"
 
+    def form_valid(self, form):
+        w = form.save(commit=False)
+        w.author = self.request.user
+        return super().form_valid(form)
 
 class UpdatePage(DataMixin, UpdateView):
     model = Women
