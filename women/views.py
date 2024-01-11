@@ -20,7 +20,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from women.models import Women, Category, TagPost, UploadFiles
-from .forms import AddPostForm, UploadFileForm
+from .forms import AddPostForm, ContactForm, UploadFileForm
 
 
 class WomenHome(DataMixin, ListView):
@@ -70,6 +70,7 @@ class AddPage(LoginRequiredMixin, DataMixin, FormView):
         w.author = self.request.user
         return super().form_valid(form)
 
+
 class UpdatePage(DataMixin, UpdateView):
     model = Women
     fields = ["title", "content", "photo", "is_published", "cat"]
@@ -84,8 +85,15 @@ class DeletePage(DeleteView):
     success_url = reverse_lazy("home")
 
 
-def contact(request):
-    return HttpResponse(f"Обратная связь")
+class ContactFormView(LoginRequiredMixin, DataMixin, FormView):
+    form_class = ContactForm
+    template_name = "women/contact.html"
+    success_url = reverse_lazy("home")
+    title_page = "Обратная связь"
+
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        return super().form_valid(form)
 
 
 def login(request):

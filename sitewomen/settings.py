@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     "users",
     "django_extensions",
     "debug_toolbar",
+    "social_django",
+    'captcha',
 ]
 
 MIDDLEWARE = [
@@ -85,19 +87,14 @@ WSGI_APPLICATION = "sitewomen.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-        # 'ENGINE': 'django.db.backends.postgresql',
-        # 'NAME': 'db_women',
-        # 'USER': 'postgres',
-        # 'PASSWORD': '1234',
-        # 'HOST': 'localhost',
-        # 'PORT': 5432,
-        # "ENGINE": "django.db.backends.postgresql",
-        # "OPTIONS": {
-        #     "service": "my_service",
-        #     "passfile": ".my_pgpass",
-        # },
+        # "ENGINE": "django.db.backends.sqlite3",
+        # "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "sitewomen_db",
+        "USER": "sitewomen",
+        "PASSWORD": "1234",
+        "HOST": "localhost",
+        "PORT": 5432,
     }
 }
 
@@ -152,6 +149,7 @@ LOGOUT_REDIRECT_URL = "home"
 LOGIN_URL = "users:login"
 
 AUTHENTICATION_BACKENDS = [
+    "social_core.backends.github.GithubOAuth2",
     "django.contrib.auth.backends.ModelBackend",
     "users.authentication.EmailAuthBackend",
 ]
@@ -168,6 +166,9 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SERVER_EMAIL = EMAIL_HOST_USER
 EMAIL_ADMIN = EMAIL_HOST_USER
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = "users.User"
 
-DEFAULT_USER_IMAGE = MEDIA_URL + 'users/default.png'
+DEFAULT_USER_IMAGE = MEDIA_URL + "users/default.png"
+
+SOCIAL_AUTH_GITHUB_KEY = "efd5b120682755a1ecc3"
+SOCIAL_AUTH_GITHUB_SECRET = "ff128e873a929c376e769ce5d86cb81da767c424"
