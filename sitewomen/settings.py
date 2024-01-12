@@ -44,19 +44,28 @@ INSTALLED_APPS = [
     "django_extensions",
     "debug_toolbar",
     "social_django",
-    'captcha',
+    "captcha",
+    "django.contrib.sites",
+    "django.contrib.sitemaps",
 ]
 
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    # "django.middleware.cache.UpdateCacheMiddleware",
     "django.middleware.common.CommonMiddleware",
+    # "django.middleware.cache.FetchFromCacheMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
+
+# CACHE_MIDDLEWARE_ALIAS = "default"
+# CACHE_MIDDLEWARE_SECONDS = 10
+# CACHE_MIDDLEWARE_KEY_PREFIX = "sitewomen"
+
 
 ROOT_URLCONF = "sitewomen.urls"
 
@@ -172,3 +181,14 @@ DEFAULT_USER_IMAGE = MEDIA_URL + "users/default.png"
 
 SOCIAL_AUTH_GITHUB_KEY = "efd5b120682755a1ecc3"
 SOCIAL_AUTH_GITHUB_SECRET = "ff128e873a929c376e769ce5d86cb81da767c424"
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+        # "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        # "LOCATION": "redis://127.0.0.1:6379",
+    }
+}
+
+SITE_ID = 1
